@@ -92,6 +92,9 @@
         flex-direction: column;
         align-items: center;
     }
+    .registerHeader{
+        padding: 1.2rem;
+    }
     
 }
 
