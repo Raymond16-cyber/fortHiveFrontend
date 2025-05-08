@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 import { Provider as Providers } from "react-redux";
 import store from "./store/store.js";
-import { positions, transitions  } from "react-alert";
+
 
 import { Toaster } from "react-hot-toast";
 const options = {
