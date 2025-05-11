@@ -1,0 +1,16 @@
+/* Friend picture */
+.friend-picture{
+    border-radius: 50%;
+}
+
+/* Active friends scrollbar */
+.image-active-icon::-webkit-scrollbar{
+    display: none;
+  
+}
+
+/* User active icon */
+.active-icon{
+    border-radius: 50%;
+    
+}

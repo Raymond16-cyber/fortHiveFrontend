@@ -22,12 +22,12 @@ export const userRegister = (data) => {
         }
       });
     } catch (error) {
-      const message = error.response.data.error || "Registration failed";
+      const message = error.response.data.errors || "Registration failed";
       console.error("❌", message);
       dispatch({
         type: USER_REGISTER_FAIL,
         payload: {
-          error: error.response?.data.error,
+          error: error.response?.data.errors,
         },
       });
     }

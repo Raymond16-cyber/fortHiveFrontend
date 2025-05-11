@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { userRegister } from "../../store/actions/authAction.js";
 import {
@@ -15,6 +15,8 @@ import "../../css/Register.css";
 const RegisterBody = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const params = useParams();
+
   const { loading, isAuthenticated, error, successMessage,myInfo} = useSelector(
     (state) => state.auth
   );
@@ -71,7 +73,9 @@ const RegisterBody = () => {
   useEffect(() => {
     if (isAuthenticated) {
       setShowLoader(true);
-      setTimeout(() => navigate("/fort/users/edit-profile"), 3000);
+      setTimeout(() => navigate(`/fort/${state.fname}/home`), 3000);
+      console.log(params);
+      
     }
     if (successMessage) {
       toast.success(successMessage);

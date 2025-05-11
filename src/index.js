@@ -8,9 +8,9 @@ import store from "./store/store.js";
 import { Toaster } from "react-hot-toast";
 
 const options = {
-  duration: 6000, // use 'duration' not 'timeout' for react-hot-toast
+  duration: 6000,
   position: "top-center",
-  // react-hot-toast handles transitions internally; no 'transition' option needed
+  
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
