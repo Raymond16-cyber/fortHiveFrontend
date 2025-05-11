@@ -9,7 +9,7 @@ const MainChat = () => {
     <div className="messenger w-full h-screen bg-white">
       <div className="row h-full flex w-full">
         <div className="col border w-full sm:w-3/12">
-          <div className="leftSide flex flex-col px-2 h-screen gap-1">
+          <div className="leftSide flex flex-col px-2 h-screen gap-1 bg-cyan-900">
             <div className="leftSideTop flex flex-row justify-between items-center">
               <div className="imageName flex flex-row items-center">
                 <div className="image">
@@ -52,6 +52,18 @@ const MainChat = () => {
             </div>
 
             <div className="friends">
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
               <div className="hoverFriend">
                 <Friends />
               </div>
