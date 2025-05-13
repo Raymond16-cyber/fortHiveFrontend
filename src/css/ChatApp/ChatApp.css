@@ -1,0 +1,5 @@
+/* user contact scroll styling */
+.user-contact-scroll::-webkit-scrollbar{
+    display: none;
+  
+}

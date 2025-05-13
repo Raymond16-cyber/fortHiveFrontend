@@ -13,7 +13,7 @@ const RegisterFooter = () => {
           <p>Terms of service</p>
           <p>Privacy Policy</p>
         </div>
-        <div className="socialLinks flex items-center gap-3 text-3xl cursor-pointer">
+        <div className="socialLinks flex items-center gap-3 text-3xl cursor-pointer justify-center">
           <Link>
             <i className="bx bxl-facebook-square"></i>
           </Link>

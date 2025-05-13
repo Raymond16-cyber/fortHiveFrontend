@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate,useParams } from "react-router-dom";
@@ -118,19 +119,70 @@ const RegisterBody = () => {
   }
 
 
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center px-0 bg-white md:bg-cyan-900 mb-4">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-4xl p-6 md:p-12 flex flex-col md:flex-row items-center">
-        <div className="w-full md:w-1/2 flex flex-col items-center mb-6 md:mb-0">
-          <img src={registerLogo} alt="Logo" className="w-12 mb-4" />
-          <h1 className="text-3xl sm:text-4xl font-bold font-mono text-center text-cyan-900">
-            Register
-          </h1>
-          <img src={man} alt="Illustration" className="w-3/4 mt-6 rounded-lg" />
-        </div>
 
-        <form className="w-full md:w-1/2 space-y-4" onSubmit={onRegister}>
-          {[
+const containerVariant = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+};
+
+const leftVariant = {
+  hidden: { x: -100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { delay: 0.3, duration: 0.6, ease: "easeOut" }
+  }
+};
+
+const rightVariant = {
+  hidden: { x: 100, opacity: 0 },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { delay: 0.5, duration: 0.6, ease: "easeOut" }
+  }
+};
+
+return (
+  <div className="min-h-screen w-full flex items-center justify-center px-0 bg-white md:bg-cyan-900 mb-4">
+    <motion.div
+      variants={containerVariant}
+      initial="hidden"
+      animate="visible"
+      className="bg-white rounded-2xl shadow-lg w-full max-w-4xl p-6 md:p-12 flex flex-col md:flex-row items-center"
+    >
+      <motion.div
+        variants={leftVariant}
+        className="w-full md:w-1/2 flex flex-col items-center mb-6 md:mb-0"
+      >
+        <motion.img
+          whileHover={{ scale: 1.1 }}
+          src={registerLogo}
+          alt="Logo"
+          className="w-12 mb-4"
+        />
+        <h1 className="text-3xl sm:text-4xl font-bold font-mono text-center text-cyan-900">
+          Register
+        </h1>
+        <motion.img
+          whileHover={{ scale: 1.05 }}
+          src={man}
+          alt="Illustration"
+          className="w-3/4 mt-6 rounded-lg"
+        />
+      </motion.div>
+
+      <motion.form
+        variants={rightVariant}
+        className="w-full md:w-1/2 space-y-4"
+        onSubmit={onRegister}
+      >
+        {/* form inputs remain the same... */}
+        {[
             { id: "fname", label: "First Name", name: "fname" },
             { id: "lname", label: "Last Name", name: "lname" },
             { id: "email", label: "Email", name: "email", type: "email" },
@@ -202,16 +254,17 @@ const RegisterBody = () => {
             {/* </Link> */}
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-cyan-800 text-white py-2 rounded-lg font-semibold hover:bg-cyan-700 transition"
-          >
-            Register
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+        <button
+          type="submit"
+          className="w-full bg-cyan-800 text-white py-2 rounded-lg font-semibold hover:bg-cyan-700 transition"
+        >
+          Register
+        </button>
+      </motion.form>
+    </motion.div>
+  </div>
+);
+
 };
 
 export default RegisterBody;

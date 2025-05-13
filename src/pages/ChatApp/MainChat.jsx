@@ -3,29 +3,22 @@ import { FaEllipsisH, FaEdit, FaSistrix } from "react-icons/fa";
 import "../../css/ChatApp/ChatApp.css";
 import ActiveFriends from "./ActiveFriends";
 import Friends from "./Friends";
+import SideBar from "./SideBar";
+import ChatContent from "./LeftChatSide";
 
 const MainChat = () => {
   return (
     <div className="messenger w-full h-screen bg-white">
       <div className="row h-full flex w-full">
+        <div className="side-bar">
+        <SideBar />
+
+        </div>
         <div className="col border w-full sm:w-3/12">
-          <div className="leftSide flex flex-col px-2 h-screen gap-1 bg-cyan-900">
+          <div className="leftSide flex flex-col px-2 h-screen gap-1">
             <div className="leftSideTop flex flex-row justify-between items-center">
-              <div className="imageName flex flex-row items-center">
-                <div className="image">
-                  <img src="/images/defaultUser.png" alt="" width={70} />
-                </div>
-                <div className="name">
-                  <h3>Hi Raymond</h3>
-                </div>
-              </div>
-              <div className="icons flex flex-row items-center gap-4">
-                <div className="icon">
-                  <FaEllipsisH />
-                </div>
-                <div className="icon">
-                  <FaEdit />
-                </div>
+              <div className="flex justify-center items-center">
+                <h2 className="font-bold text-2xl ">Chats</h2>
               </div>
             </div>
 
@@ -42,7 +35,9 @@ const MainChat = () => {
                 <button
                   type="submit"
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-blue-600"
-                ><FaSistrix /></button>
+                >
+                  <FaSistrix />
+                </button>
               </div>
             </div>
 
@@ -51,7 +46,28 @@ const MainChat = () => {
               <ActiveFriends />
             </div>
 
-            <div className="friends">
+            <div className="user-contact-scroll  friends overflow-y-scroll">
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
+              <div className="hoverFriend">
+                <Friends />
+              </div>
               <div className="hoverFriend">
                 <Friends />
               </div>
@@ -70,6 +86,13 @@ const MainChat = () => {
             </div>
           </div>
         </div>
+
+
+
+        
+
+        <ChatContent />
+
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ function App() {
           <Route path="/fort/register" element={<MainRegister />} />
           <Route path="/fort/login" element={<MainLogin />} />
           <Route path="/fort/:users/home" element={<MainChat />} />
+          {/* <Route path="/fort/homePage/flank.ai" element={<AIPage />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
