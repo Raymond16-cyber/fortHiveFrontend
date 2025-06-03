@@ -34,7 +34,7 @@ import useSound from "use-sound";
 import sendMessageSound from "../../assets/sounds/sendMessageSound.mp3";
 import notificationSound from "../../assets/sounds/notificationSound.mp3";
 import { toast } from "react-toastify";
-import { set } from "mongoose";
+
 
 const MainChat = () => {
   const pickerRef = useRef(null);
