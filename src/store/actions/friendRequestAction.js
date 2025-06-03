@@ -1,7 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../axiosInstance/axiosInstance";
 export const sendFriendRequest = (fname) => async (dispatch) => {
   try {
-    const res = await axios.post("/api/v1/friends/send-friend-request", {
+    const res = await axiosInstance.post("/api/v1/friends/send-friend-request", {
       fname,
     });
 
@@ -19,7 +19,7 @@ export const sendFriendRequest = (fname) => async (dispatch) => {
 
 export const acceptFriendRequest = (requestId) => async (dispatch) => {
   try {
-    const res = await axios.post("/api/v1/friends/accept-friend-request", {
+    const res = await axiosInstance.post("/api/v1/friends/accept-friend-request", {
       requestId,
     });
     dispatch({ type: "ACCEPT_FRIEND_REQUEST", payload: res.data });
@@ -29,7 +29,7 @@ export const acceptFriendRequest = (requestId) => async (dispatch) => {
 };
 
 export const blockFriendRequest = (requestId) => async (dispatch) => {
-  const res = await axios.post("/api/v1/fort/block-user", { requestId });
+  const res = await axiosInstance.post("/api/v1/fort/block-user", { requestId });
   dispatch({ type: "BLOCK_USER", payload: res.data.request });
 };
 

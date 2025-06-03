@@ -10,7 +10,7 @@ const NewEcoChatModal = ({ isOpen, onClose,
             selectedFriends,
             setSelectedFriends,
             defaultfriendImage,
-            filtered6Friends,
+            filteredFriends,
             handleSelectFriend,
            userAddedIcon,
 }) => {

@@ -271,7 +271,7 @@ const MainChat = () => {
   useEffect(() => {
     if (friends.length === 0) return;
 
-    socket.current = io("https://fort-socketbackend-1.onrender.com", {
+    socket.current = io("https://fort-sockets.onrender.com", {
       transports: ["websocket"],
       withCredentials: true,
     });
