@@ -271,7 +271,7 @@ const MainChat = () => {
   useEffect(() => {
     if (friends.length === 0) return;
 
-    socket.current = io("ws://localhost:8000", {
+    socket.current = io("wss://localhost:8000", {
       transports: ["websocket"],
       withCredentials: true,
     });
