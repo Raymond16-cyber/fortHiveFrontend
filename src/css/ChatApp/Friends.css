@@ -1,3 +1,11 @@
 img{
     border-radius: 50%;
 }
+
+
+span.unseenMessage{
+    font-weight: 700 !important;
+    font-size: 0.875rem /* 14px */;
+    line-height: 1.25rem ;
+    
+}

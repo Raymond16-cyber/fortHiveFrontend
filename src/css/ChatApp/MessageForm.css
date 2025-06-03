@@ -1,0 +1,17 @@
+#emoji-scroll::-webkit-scrollbar{
+    display: none;
+}
+
+/* Attachment Show */
+@media (min-width:640px) {
+    .attachmentShow{
+        height: 15rem;
+        padding: 32px;
+        width: 18rem;
+        
+    }
+}
+
+.attachmentShow::-webkit-scrollbar{
+    display: none;
+}

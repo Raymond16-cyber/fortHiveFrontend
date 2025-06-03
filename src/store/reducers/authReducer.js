@@ -5,6 +5,8 @@ import {
   USER_REGISTER_SUCCESS,
   SUCCESS_CLEAR,
   USER_LOGIN_FAIL,
+  USER_LOGOUT_FAIL,
+  USER_LOGOUT_SUCCESS,
 } from "../types/aythType";
 import { jwtDecode } from "jwt-decode";
 
@@ -26,6 +28,7 @@ const tokenDecode = (token) => {
 };
 
 const getToken = localStorage.getItem("userToken");
+
 if (getToken) {
   const getInfo = tokenDecode(getToken);
   if (getInfo) {
@@ -52,15 +55,25 @@ export const authReducer = (state = authState, action) => {
         successMessage: payload.successMessage,
         error: "",
       };
-
+      
     case USER_REGISTER_FAIL:
-    case USER_LOGIN_FAIL:
+      case USER_LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
         isAuthenticated: false,
         error: payload.error,
         myInfo: "",
+      };
+      case USER_LOGOUT_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          myInfo: null,
+          error: null,
+          isAuthenticated: false,
+          successMessage: "Logout Successful",
+
       };
 
     case SUCCESS_CLEAR:

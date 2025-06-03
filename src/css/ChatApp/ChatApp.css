@@ -3,3 +3,22 @@
     display: none;
   
 }
+.messenger{
+
+    overflow: hidden;
+}
+
+
+.menu-scroll::-webkit-scrollbar{
+    display: none;
+}
+
+/* actuve friend background when clicked on */
+.current-friend{
+    background-color: white
+}
+
+.current-friend-active{
+    background-color: lightgrey;
+}
+

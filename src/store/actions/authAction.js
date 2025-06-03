@@ -1,5 +1,12 @@
 import axios from "axios";
-import { USER_REGISTER_FAIL, USER_REGISTER_SUCCESS,USER_LOGIN_FAIL,USER_LOGIN_SUCCESS } from "../types/aythType";
+import {
+  USER_REGISTER_FAIL,
+  USER_REGISTER_SUCCESS,
+  USER_LOGIN_FAIL,
+  USER_LOGIN_SUCCESS,
+  USER_LOGOUT_SUCCESS,
+  USER_LOGOUT_FAIL,
+} from "../types/aythType";
 
 export const userRegister = (data) => {
   return async (dispatch) => {
@@ -17,9 +24,8 @@ export const userRegister = (data) => {
         type: USER_REGISTER_SUCCESS,
         payload: {
           successMessage: response.data.successMessage,
-          token: response.data.token
-
-        }
+          token: response.data.token,
+        },
       });
     } catch (error) {
       const message = error.response.data.errors || "Registration failed";
@@ -33,9 +39,6 @@ export const userRegister = (data) => {
     }
   };
 };
-
-
-
 
 //   User login
 export const userLogin = (data) => {
@@ -54,9 +57,8 @@ export const userLogin = (data) => {
         type: USER_LOGIN_SUCCESS,
         payload: {
           successMessage: response.data.successMessage,
-          token: response.data.token
-
-        }
+          token: response.data.token,
+        },
       });
     } catch (error) {
       const message = error.response.data.error || "Login failed";
@@ -69,4 +71,21 @@ export const userLogin = (data) => {
       });
     }
   };
+};
+
+// user logout
+export const userLogout = () => async (dispatch) => {
+  try {
+    const response = await axios.post("/api/v1/fort/user-logout");
+
+    if (response) {
+      localStorage.removeItem("userToken");
+      dispatch({
+        type: USER_LOGOUT_SUCCESS,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+    
 };

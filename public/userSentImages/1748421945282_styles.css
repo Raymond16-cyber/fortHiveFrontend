@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: aliceblue;
+}
+
+.container {
+    text-align: center;
+}
+
+#color-box {
+    width: 200px;
+    height: 200px;
+    background-color: lightblue;
+    margin: 20px auto;
+    border: 2px solid #333;
+    transition: background-color 0.3s ease;
+    border-radius: 10px;
+}
+
+#change-color-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#change-color-btn:hover {
+    background-color: #fff;
+    color: black;
+    border: 2px solid black;
+    border-radius: px;
+}

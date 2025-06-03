@@ -1,0 +1,15 @@
+.ActiveFriends::-webkit-scrollbar{
+    display: none;
+}
+
+.current-friend{
+    background-color: #e5e7eb;
+}
+
+.current-friend-active{
+    border-left:3px solid black;
+}
+
+.themeLogoutshow{
+    display: none;
+}
