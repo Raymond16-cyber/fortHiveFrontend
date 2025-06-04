@@ -12,19 +12,19 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
+          <Route index path="/fort/" element={<MainHome />} />
+          <Route path="/fort/register" element={<MainRegister />} />
+          <Route path="/fort/login" element={<MainLogin />} />
           <Route
-            index
-            path="/fort/"
+            path="/fort/:id/home"
             element={
               <ProtectedRoute>
                 {" "}
-                <MainHome />
+                <MainChat />
               </ProtectedRoute>
             }
           />
-          <Route path="/fort/register" element={<MainRegister />} />
-          <Route path="/fort/login" element={<MainLogin />} />
-          <Route path="/fort/:id/home" element={<MainChat />} />
+
           {/* <Route path="/fort/homePage/flank.ai" element={<AIPage />} /> */}
         </Routes>
       </BrowserRouter>

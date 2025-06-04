@@ -35,7 +35,6 @@ import sendMessageSound from "../../assets/sounds/sendMessageSound.mp3";
 import notificationSound from "../../assets/sounds/notificationSound.mp3";
 import { toast } from "react-toastify";
 
-
 const MainChat = () => {
   const pickerRef = useRef(null);
   const dispatch = useDispatch();
@@ -271,7 +270,7 @@ const MainChat = () => {
   useEffect(() => {
     if (friends.length === 0) return;
 
-    socket.current = io("https://fort-sockets.onrender.com", {
+    socket.current = io("https://fort-socketbackend-wrqy.onrender.com", {
       transports: ["websocket"],
       withCredentials: true,
     });
@@ -406,11 +405,7 @@ const MainChat = () => {
     });
   }, [message_get_success]);
 
-
   // Search for friends
-  
-   
-
 
   return smallScreen < 640 ? (
     <PhoneUi
