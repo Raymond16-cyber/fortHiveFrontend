@@ -1,4 +1,5 @@
 import axiosInstance from "../axiosInstance/axiosInstance";
+import axios from "axios";
 import {
   ADD_FRIEND_FAIL,
   ADD_FRIEND_SUCCESS,
@@ -14,7 +15,9 @@ export const addFriend = (fname) => async (dispatch) => {
     const res = await axiosInstance.post("/api/v1/fort/add-friends", {
       fname, // OR ID if you're using that
     });
-    dispatch({ type: ADD_FRIEND_SUCCESS, payload: res.data.user.friends });
+    console.log("the response",res.data.friends);
+    
+    dispatch({ type: ADD_FRIEND_SUCCESS, payload: res.data.friends });
   } catch (error) {
     console.error(error);
     dispatch({
@@ -56,7 +59,7 @@ export const sendMessages = (data) => async (dispatch) => {
       },
     });
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.response);
   }
 };
 

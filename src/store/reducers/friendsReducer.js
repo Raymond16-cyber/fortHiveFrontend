@@ -13,6 +13,7 @@ import {
   UPDATE,
   GET_MESSAGES_SUCCESS_CLEAR,
   SEEN_ALL_MESSAGES,
+  ADD_FRIEND_FAIL_CLEAR,
 } from "../types/aythType";
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   error: null,
   sendMessageSuccess: false,
   message_get_success: false,
+  friendAdded: false
 };
 
 export const friendsMessageReducer = (state = initialState, action) => {
@@ -36,11 +38,13 @@ export const friendsMessageReducer = (state = initialState, action) => {
         ...state,
         friends: payload, // updated list
         error: null,
+        friendAdded: true
       };
     case ADD_FRIEND_FAIL:
       return {
         ...state,
         error: payload,
+        friendAdded: false
       };
     case GET_MESSAGES_SUCCESS:
       return {
@@ -206,6 +210,12 @@ export const friendsMessageReducer = (state = initialState, action) => {
       return {
         ...state,
         sendMessageSuccess: false,
+      };
+    case ADD_FRIEND_FAIL_CLEAR:
+      return {
+        ...state,
+        error: null,
+        friendAdded: false
       };
 
     case GET_MESSAGES_SUCCESS_CLEAR:

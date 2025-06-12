@@ -34,14 +34,20 @@ import useSound from "use-sound";
 import sendMessageSound from "../../assets/sounds/sendMessageSound.mp3";
 import notificationSound from "../../assets/sounds/notificationSound.mp3";
 import { toast } from "react-toastify";
+import {
+  editProfile,
+  editProfilePic,
+} from "../../store/actions/EditProfileAction";
 
 const MainChat = () => {
   const pickerRef = useRef(null);
   const dispatch = useDispatch();
+  const { myInfo } = useSelector((state) => state.auth);
+  console.log("User Info", myInfo);
 
   const [options, setOptions] = useState(false);
   const [redirectAddFriend, setRedirectAddFriend] = useState(false);
-  const [currentFriend, setCurrentFriend] = useState("");
+  const [currentFriend, setCurrentFriend] = useState({});
   const [newMessage, setNewMessage] = useState("");
   const [smallScreen, setSmallScreen] = useState(window.innerWidth);
   const [userIsActive, setUserIsActive] = useState([]);
@@ -55,6 +61,26 @@ const MainChat = () => {
   const [playNotification] = useSound(notificationSound);
   const [playMessageSound] = useSound(sendMessageSound);
 
+  const [changeProfileDetails, setChangeProfileDetails] = useState({
+    fname: "",
+    lname: "",
+    bio: "",
+    id: myInfo.id,
+    status: "",
+  });
+  const [friendProfileDetails, setFriendProfileDetails] = useState({
+    fname: "",
+    lname: "",
+    bio: "",
+    image: "",
+    status: "",
+    _id: null,
+  });
+  const [changeProfilePicture, setChangeProfilePicture] = useState({
+    formData: "",
+    Nimage: myInfo.image,
+    image: "",
+  });
   // Initializing socket
   const socket = useRef();
 
@@ -69,9 +95,6 @@ const MainChat = () => {
     screenSize();
     return () => window.removeEventListener("resize", screenSize);
   });
-
-  const { myInfo } = useSelector((state) => state.auth);
-  console.log("User Info", myInfo);
 
   useEffect(() => {
     dispatch(getFriends());
@@ -212,7 +235,7 @@ const MainChat = () => {
       // dispatching data
       dispatch(sendImageMessage(formData));
     } else {
-      // console.log("No file selected.");
+      console.log("No file selected.");
     }
   };
 
@@ -251,13 +274,13 @@ const MainChat = () => {
   const goBack = () => setRedirectAddFriend(false);
   const AddFriends = () => setRedirectAddFriend(true);
 
-  useEffect(() => {
-    if (!currentFriend && Array.isArray(friends) && friends.length > 0) {
-      console.log("Setting current friend:", friends[0]);
-      setCurrentFriend(friends[0].friendInfo);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // <-- Only run once on first render
+  // useEffect(() => {
+  //   if (!currentFriend && Array.isArray(friends) && friends.length > 0) {
+  //     console.log("Setting current friend:", friends[0]);
+  //     setCurrentFriend(friends[0].friendInfo);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []); // <-- Only run once on first render
 
   // get user messages
   useEffect(() => {
@@ -270,64 +293,108 @@ const MainChat = () => {
   useEffect(() => {
     if (friends.length === 0) return;
 
-    socket.current = io("https://fort-socketbackend-wrqy.onrender.com", {
-      transports: ["websocket"],
-      withCredentials: true,
-    });
-
-    socket.current.on("messageSeenResponse", (msg) => {
-      dispatch({
-        type: SEEN_MESSAGES,
-        payload: {
-          msgInfo: msg,
-        },
+    if (!socket.current) {
+      socket.current = io("https://fort-socketbackend-1.onrender.com", {
+        transports: ["websocket"],
+        withCredentials: true,
       });
-    });
 
-    // dispatch the msg ddelivered message to action
-    socket.current.on("messageDeliveredResponse", (msg) => {
-      dispatch({
-        type: DELIVERED_MESSAGES,
-        payload: {
-          msgInfo: msg,
-        },
+      socket.current.on("messageSeenResponse", (msg) => {
+        dispatch({
+          type: SEEN_MESSAGES,
+          payload: {
+            msgInfo: msg,
+          },
+        });
       });
-    });
 
-    socket.current.on("seenSuccess", (data) => {
-      dispatch({
-        type: SEEN_ALL_MESSAGES,
-        payload: data,
+      // dispatch the msg ddelivered message to action
+      socket.current.on("messageDeliveredResponse", (msg) => {
+        dispatch({
+          type: DELIVERED_MESSAGES,
+          payload: {
+            msgInfo: msg,
+          },
+        });
       });
-    });
 
-    const friendIDs = friends.map((friend) => {
-      return friend.friendInfo._id;
-    });
+      socket.current.on("seenSuccess", (data) => {
+        dispatch({
+          type: SEEN_ALL_MESSAGES,
+          payload: data,
+        });
+      });
 
-    socket.current.emit("addUser", myInfo.id, myInfo, friendIDs);
+      console.log("the fri", friends);
+      const friendIDs = friends
+        .map((friend) => {
+          if (typeof friend === "string") return friend;
+          if (friend?.friendInfo?._id) return friend.friendInfo._id;
+          if (friend?._id) return friend._id;
+          return null;
+        })
+        .filter(Boolean); // removes null/undefined
 
-    // receive online users
-    socket.current.on("getUser", (users) => {
-      const filteredActiveUsers = users.filter(
-        (user) => user.userId !== myInfo.id
-      );
-      setUserIsActive(filteredActiveUsers);
-      console.log("Active users updated:", filteredActiveUsers);
-    });
+      socket.current.emit("addUser", myInfo.id, myInfo, friendIDs);
 
-    // messages
-    socket.current.on("getMessage", (data) => {
-      setSocketMessages(data);
-    });
+      // receive online users
+      socket.current.on("getUser", (users) => {
+        const filteredActiveUsers = users
+          .filter((user) => user.userId !== myInfo.id)
+          .map((user) => ({
+            ...user,
+            userInfo: {
+              ...user.userInfo,
+              _id: user.userInfo._id || user.userInfo.id,
+            },
+          }));
+        setUserIsActive(filteredActiveUsers);
+        console.log("Active users updated:", filteredActiveUsers);
+      });
 
-    socket.current.on("getTypedMessage", (data) => {
-      setTypingMessages(data);
-    });
+      // messages
+      socket.current.on("getMessage", (data) => {
+        setSocketMessages(data);
+      });
+
+      socket.current.on("getTypedMessage", (data) => {
+        setTypingMessages(data);
+      });
+
+      socket.current.on("updatedProfileDetails", (data) => {
+        console.log("Received updatedProfileDetails from socket:", data);
+        setFriendProfileDetails({
+          fname: data?.newFirstName,
+          lname: data?.newLastName,
+          bio: data?.newBio,
+          _id: data?.userID,
+          image: data?.newImage,
+          status: data?.newStatus,
+        });
+
+        setUserIsActive((prev) =>
+          prev.map((user) =>
+            user.userInfo &&
+            (user.userInfo._id === data.userID ||
+              user.userInfo.id === data.userID)
+              ? {
+                  ...user,
+                  userInfo: {
+                    ...user.userInfo,
+                    image: data.newImage || user.userInfo.image,
+                  },
+                }
+              : user
+          )
+        );
+      });
+    }
 
     return () => {
-      socket.current.disconnect();
-      socket.current = null;
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = null;
+      }
     };
   }, [friends]);
 
@@ -364,6 +431,7 @@ const MainChat = () => {
   // toasting notifications
   useEffect(() => {
     if (
+      socketMessages &&
       socketMessages.senderID !== currentFriend._id &&
       socketMessages.receiverID === myInfo.id
     ) {
@@ -405,7 +473,97 @@ const MainChat = () => {
     });
   }, [message_get_success]);
 
-  // Search for friends
+  //   Change profile image
+  const hiddenChangeImageFileInput = useRef(null);
+
+  const hiddenChangeImageFileClick = () => {
+    hiddenChangeImageFileInput.current.click(); // Opens file dialog
+  };
+
+  const hiddenChangeImageFileChange = async (event) => {
+    const fileUploaded = event.target.files[0];
+    if (fileUploaded) {
+      const imageName = fileUploaded.name;
+      const newImageName = Date.now() + "_" + imageName.replace(/\s+/g, ""); //remove inbetween whitespaces
+
+      console.log("FILuPLOADED", fileUploaded);
+      console.log("imgName", imageName);
+
+      const formData = new FormData();
+      formData.append("profilepic", fileUploaded); // ✅ send file
+      formData.append("imageName", newImageName); // ✅ send new name
+
+      setChangeProfilePicture({
+        ...changeProfilePicture,
+        formData: formData,
+        image: newImageName,
+      });
+    }
+  };
+
+  //   other profile details
+  const handleChangeProfileDetails = (e) => {
+    const { name, value } = e.target;
+    setChangeProfileDetails((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const changeDetails = async () => {
+    if (changeProfilePicture?.formData) {
+      await dispatch(editProfilePic(changeProfilePicture.formData));
+    }
+    dispatch(editProfile(changeProfileDetails));
+
+    console.log("the details", changeProfileDetails);
+    const friendIDs = friends
+      .map((friend) => {
+        if (typeof friend === "string") return friend;
+        if (friend?.friendInfo?._id) return friend.friendInfo._id;
+        if (friend?._id) return friend._id;
+        return null;
+      })
+      .filter(Boolean); // removes null/undefined
+    socket.current.emit("editProfileDetails", {
+      userID: changeProfileDetails.id,
+      receiverID: friendIDs,
+      newFirstName: changeProfileDetails.fname
+        ? changeProfileDetails.fname
+        : myInfo.fname,
+      newLastName: changeProfileDetails.lname
+        ? changeProfileDetails.lname
+        : myInfo.lname,
+      newBio: changeProfileDetails.bio ? changeProfileDetails.bio : myInfo.bio,
+      newImage: changeProfilePicture.image
+        ? changeProfilePicture.image
+        : myInfo.image,
+      newStatus: changeProfileDetails.status
+        ? changeProfileDetails.status
+        : myInfo.status,
+    });
+  };
+
+  useEffect(() => {
+    console.log("friendProfileDetails changed:", friendProfileDetails);
+    console.log("active users images changed", userIsActive);
+  }, [friendProfileDetails]);
+
+  useEffect(() => {
+    if (friendProfileDetails && friendProfileDetails._id) {
+      localStorage.setItem(
+        "friendProfileDetails",
+        JSON.stringify(friendProfileDetails)
+      );
+    }
+  }, [friendProfileDetails]);
+
+  useEffect(() => {
+    const savedDetails = localStorage.getItem("friendProfileDetails");
+    if (savedDetails) {
+      setFriendProfileDetails(JSON.parse(savedDetails));
+    }
+  }, []);
 
   return smallScreen < 640 ? (
     <PhoneUi
@@ -432,6 +590,16 @@ const MainChat = () => {
       typingMessages={typingmessages}
       socketMessages={socketMessages}
       myInfo={myInfo}
+      changeProfileDetails={changeProfileDetails}
+      setChangeProfileDetails={setChangeProfileDetails}
+      handleChangeProfileDetails={handleChangeProfileDetails}
+      hiddenChangeImageFileChange={hiddenChangeImageFileChange}
+      hiddenChangeImageFileClick={hiddenChangeImageFileClick}
+      hiddenChangeImageFileInput={hiddenChangeImageFileInput}
+      changeProfilePicture={changeProfilePicture}
+      setChangeProfilePicture={setChangeProfilePicture}
+      changeDetails={changeDetails}
+      friendProfileDetails={friendProfileDetails}
     />
   ) : (
     <DesktopUi
@@ -458,6 +626,17 @@ const MainChat = () => {
       setShowUserInfo={setShowUserInfo}
       typingMessages={typingmessages}
       myInfo={myInfo}
+      AddFriends={AddFriends}
+      changeProfileDetails={changeProfileDetails}
+      setChangeProfileDetails={setChangeProfileDetails}
+      handleChangeProfileDetails={handleChangeProfileDetails}
+      hiddenChangeImageFileChange={hiddenChangeImageFileChange}
+      hiddenChangeImageFileClick={hiddenChangeImageFileClick}
+      hiddenChangeImageFileInput={hiddenChangeImageFileInput}
+      changeProfilePicture={changeProfilePicture}
+      setChangeProfilePicture={setChangeProfilePicture}
+      changeDetails={changeDetails}
+      friendProfileDetails={friendProfileDetails}
     />
   );
 };

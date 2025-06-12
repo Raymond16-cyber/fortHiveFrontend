@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { FaTimes, FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { Check, CheckCheckIcon, CheckCircle, CheckCircle2 } from "lucide-react";
 
 const NewGroupModal = ({
   isOpen,
@@ -15,6 +16,7 @@ const NewGroupModal = ({
   filteredFriends,
   handleSelectFriend,
   userAddedIcon,
+  friendProfileDetails,
 }) => {
   const backdropRef = useRef();
 
@@ -32,6 +34,8 @@ const NewGroupModal = ({
       onClose();
     }
   };
+
+  console.log("selected friends", selectedFriends);
 
   return (
     <AnimatePresence>
@@ -57,6 +61,10 @@ const NewGroupModal = ({
                 onClick={() => setIsNewGroup(false)}
               >
                 <FaArrowLeft className="text-black" />
+
+                {selectedFriends.length > 0 && (
+                  <CheckCircle className="text-green-500 absolute top-2 right-2 cursor-pointer" />
+                )}
               </div>
               <div className="GroupImage items-center w-full flex justify-center">
                 <div className="relative image w-fit hover:bg-slate-800">
@@ -95,12 +103,21 @@ const NewGroupModal = ({
                           <div className="selected-friends flex space-x-2 mb-4">
                             {selectedFriends.map((f, idx) => (
                               <div>
-                                <img
-                                  key={idx}
-                                  src={f.image ? f.image : defaultfriendImage}
-                                  alt={f.fname}
-                                  className="w-10 h-10 rounded-full border-2 border-green-400"
-                                />
+                                <div className="w-10 h-10 rounded-full overflow-hidden  border-2 border-green-400">
+                                  <img
+                                    key={idx}
+                                    src={
+                                      friendProfileDetails._id === f._id &&
+                                      friendProfileDetails.image
+                                        ? `/userProfilePic/${friendProfileDetails.image}`
+                                        : f.image
+                                        ? `/userProfilePic/${f.image}`
+                                        : defaultfriendImage
+                                    }
+                                    alt={f.fname}
+                                    className=" w-full h-full object-cover"
+                                  />
+                                </div>
                                 <h2 className="text-sm font-light">
                                   {f.fname}
                                 </h2>
@@ -130,16 +147,19 @@ const NewGroupModal = ({
                           }}
                         >
                           <div className="imageName flex w-full">
-                            <div className="friendImage">
+                            <div className="friendImage w-12 h-12 rounded-full overflow-hidden">
                               <img
                                 src={
-                                  friend.friendInfo.image
-                                    ? friend.friendInfo.image
+                                  friendProfileDetails._id ===
+                                    friend.friendInfo._id &&
+                                  friendProfileDetails.image
+                                    ? `/userProfilePic/${friendProfileDetails.image}`
+                                    : friend.friendInfo.image
+                                    ? `/userProfilePic/${friend.friendInfo.image}`
                                     : defaultfriendImage
                                 }
                                 alt=""
-                                width={60}
-                                height={60}
+                                className=" h-full w-full object-cover"
                               />
                             </div>
                             <div className="friendNameInfo flex flex-col text-sm">

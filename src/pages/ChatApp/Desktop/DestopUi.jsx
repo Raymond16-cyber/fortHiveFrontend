@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SideBar from "../SideBar";
 import ChatContent from "../MessageBody/MessageContact";
 import AddFriend from "../AddFriend/AddFriend";
 import FriendListPage from "../AfterSideBar/FriendListPage";
 import applogo from "../../../assets/favicon.png";
-import "../../../css/ChatApp/Desktop/DesktopUI.css"
+import "../../../css/ChatApp/Desktop/DesktopUI.css";
 
 const DesktopUi = ({
   goBack,
@@ -31,13 +31,35 @@ const DesktopUi = ({
   showUserInfo,
   setShowUserInfo,
   typingMessages,
-  sendRequests
-  
+  sendRequests,
+  changeProfileDetails,
+  setChangeProfileDetails,
+  handleChangeProfileDetails,
+  hiddenChangeImageFileChange,
+  hiddenChangeImageFileClick,
+  hiddenChangeImageFileInput,
+  changeProfilePicture,
+  setChangeProfilePicture,
+  changeDetails,
+  friendProfileDetails
 }) => {
   return (
-    <div className="AppContent row flex w-full bg-white h-screen">
+    <div className="AppContent row flex w-full bg-gradient-to-br from-blue-50 to-white  h-screen px-2">
       <div className="SideBar p-2 bg-gray-200 h-screen">
-        <SideBar />
+        <SideBar
+          changeProfileDetails={changeProfileDetails}
+          setChangeProfileDetails={setChangeProfileDetails}
+          handleChangeProfileDetails={handleChangeProfileDetails}
+          hiddenChangeImageFileChange={hiddenChangeImageFileChange}
+          hiddenChangeImageFileClick={hiddenChangeImageFileClick}
+          hiddenChangeImageFileInput={hiddenChangeImageFileInput}
+          changeProfilePicture={changeProfilePicture}
+          setChangeProfilePicture={setChangeProfilePicture}
+          changeDetails={changeDetails}
+          myInfo={myInfo}
+          friendProfileDetails={friendProfileDetails}
+          
+        />
       </div>
       {redirectAddFriend ? (
         <AddFriend goBack={goBack} sendRequests={sendRequests} />
@@ -54,6 +76,13 @@ const DesktopUi = ({
           Friends={Friends}
           userIsActive={userIsActive}
           myInfo={myInfo}
+          changeProfileDetails={changeProfileDetails}
+          setChangeProfileDetails={setChangeProfileDetails}
+          handleChangeProfileDetails={handleChangeProfileDetails}
+          hiddenChangeImageFileChange={hiddenChangeImageFileChange}
+          hiddenChangeImageFileClick={hiddenChangeImageFileClick}
+          hiddenChangeImageFileInput={hiddenChangeImageFileInput}
+          friendProfileDetails={friendProfileDetails}
           />
         )}
       {/* The chat body */}
@@ -73,6 +102,8 @@ const DesktopUi = ({
           setShowUserInfo={setShowUserInfo}
           userIsActive={userIsActive}
           typingMessages={typingMessages}
+          friends={friends}
+          friendProfileDetails={friendProfileDetails}
         />
       ) : (
         <div className="SubImage w-full items-center flex justify-center">

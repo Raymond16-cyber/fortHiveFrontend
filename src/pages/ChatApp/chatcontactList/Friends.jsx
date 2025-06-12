@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../../css/ChatApp/Friends.css";
 import defaultUserImage from "../../../assets/defaultUser.png";
 import defaultfriendImage from "../../../assets/defaultfriend.jpeg";
@@ -16,15 +16,16 @@ const Friends = ({
   messages,
   myInfo,
   currentFriend,
+  friendProfileDetails,
 }) => {
   console.log("Checking for user Friends:", friend);
   console.log("FRIEND:", friend.friendInfo.fname, friend.messageInfo);
 
   const { friendInfo, messageInfo } = friend;
 
-  if (!friend || !friendInfo) {
-    return null; // or some kind of loading fallback or default UI
-  }
+  // if (!friend || !friendInfo) {
+  //   return null; // or some kind of loading fallback or default UI
+  // }
 
   const friendID = friendInfo._id;
 
@@ -36,19 +37,30 @@ const Friends = ({
       transition: { duration: 0.6, ease: "easeOut" },
     },
   };
+
+  console.log("from friends", currentFriend);
+
+  console.log("friendinfo.image", friend);
+
+  console.log("friendProfileDetails", friendProfileDetails);
+
   return smallScreen < 640 ? (
     <AnimatePresence>
       <motion.div
-        className="friend flex items-center gap-2 p-2  hover:bg-slate-200 active:bg-slate-300 cursor-pointer justify-between"
+        className="friend flex items-center gap-2 p-2  hover:bg-slate-200 active:bg-slate-300 cursor-pointer justify-between w-full"
         variants={containerVariant}
         initial="hidden"
         animate="visible"
       >
-        <div className="imagename flex items-center gap-5 w-full">
+        <div className="imagename flex items-center  gap-5 w-full ">
           <div className="friend-img">
             <div className="image shadow-lg rounded-full ring-2 ring-white">
               <img
-                src={friendInfo.image ? friendInfo.image : defaultfriendImage}
+                src={
+                  friend.friendInfo.image
+                    ? `/userProfilePic/${friend.friendInfo.image}`
+                    : defaultfriendImage
+                }
                 alt="/images/defaultfriend.jpeg"
                 width={60}
                 height={60}
@@ -67,7 +79,10 @@ const Friends = ({
                     : "fdName"
                 }
               >
-                {friendInfo.fname}
+                {friendProfileDetails?._id === friendInfo._id &&
+                friendProfileDetails.fname
+                  ? friendProfileDetails.fname
+                  : friendInfo.fname}
               </h4>
               <span
                 className="text-green-500 text-sm"
@@ -125,9 +140,9 @@ const Friends = ({
                   {messageInfo?.status === "seen" ? (
                     <img
                       src={
-                        currentFriend?.image
-                          ? currentFriend.image
-                          : defaultUserImage
+                        friend.friendInfo.image
+                          ? `/userProfilePic/${friend.friendInfo.image}`
+                          : defaultfriendImage
                       }
                       className=""
                     />
@@ -164,15 +179,21 @@ const Friends = ({
       </motion.div>
     </AnimatePresence>
   ) : (
-    <div className="friend flex flex-row items-center gap-4 p-2  hover:bg-slate-200 active:bg-slate-300 cursor-pointer">
+    <div className="friend flex flex-row items-center gap-4 p-2  cursor-pointer w-full">
       <div className="friend-img">
-        <div className="image shadow-md rounded-full ring-2 ring-cyan-700">
+        <div className="image w-12 h-12 rounded-full overflow-hidden border-2 border-black ">
           <img
-            src={friendInfo.image ? friendInfo.image : defaultUserImage}
+            src={
+              friendProfileDetails._id === friendInfo._id
+                ? `/userProfilePic/${friendProfileDetails.image}`
+                : friend.friendInfo.image
+                ? `/userProfilePic/${friend.friendInfo.image}`
+                : defaultfriendImage
+            }
             alt="/images/defaultfriend.jpeg"
             width={65}
             height={65}
-            className=""
+            className="w-full h-full object-cover"
           />
         </div>
       </div>
@@ -181,13 +202,16 @@ const Friends = ({
         <div className="friend-name flex flex-row items-center justify-between w-full">
           <h4
             className={
-                  messageInfo?.senderID !== myInfo.id &&
-                  messageInfo?.status !== "seen"
-                    ? "unseenMessage fdName"
-                    : "fdName"
-                }
+              messageInfo?.senderID !== myInfo.id &&
+              messageInfo?.status !== "seen"
+                ? "unseenMessage fdName"
+                : "fdName"
+            }
           >
-            {friendInfo.fname}
+            {friendProfileDetails?._id === friendInfo._id &&
+            friendProfileDetails.fname !== ""
+              ? friendProfileDetails.fname
+              : friendInfo.fname}
           </h4>
           <span
             className="text-green-500 text-sm"
@@ -205,7 +229,10 @@ const Friends = ({
               <span className="text-gray-500 text-sm">You: </span>
             ) : (
               <span className="text-gray-500 text-sm">
-                {friendInfo.fname}:{" "}
+                {friendProfileDetails?._id === friendInfo._id
+                  ? friendProfileDetails.fname
+                  : friendInfo.fname}
+                :{" "}
               </span>
             )}
             {messageInfo && messageInfo?.message?.text ? (
@@ -240,14 +267,16 @@ const Friends = ({
           {myInfo?.id === messageInfo?.senderID ? (
             <div className="seenIcon rounded-full w-5 h-5 flex items-center justify-center">
               {messageInfo?.status === "seen" ? (
-                <img
-                  src={
-                    currentFriend?.image
-                      ? currentFriend.image
-                      : defaultUserImage
-                  }
-                  className=""
-                />
+                <div className="w-4 h-4 rounded-full overflow-hidden">
+                  <img
+                    src={
+                      friend.friendInfo.image
+                        ? `/userProfilePic/${friend.friendInfo.image}`
+                        : defaultfriendImage
+                    }
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               ) : messageInfo?.status === "delivered" ? (
                 <div className="delivered">
                   <img src={seenIcon} className="text-gray-300" />

@@ -7,15 +7,19 @@ import {
   USER_LOGIN_FAIL,
   USER_LOGOUT_FAIL,
   USER_LOGOUT_SUCCESS,
+  UPDATED_PROFILE_PIC,
+  UPDATED_PROFILE_DETAILS,
+  UPDATED_PROFILE_DETAILS_FAIL,
 } from "../types/aythType";
 import { jwtDecode } from "jwt-decode";
 
 const authState = {
+  myInfo: JSON.parse(localStorage.getItem("myInfo")) || {},
+  token: localStorage.getItem("userToken") || "",
   loading: true,
   isAuthenticated: false,
   error: "",
   successMessage: "",
-  myInfo: "",
 };
 
 const tokenDecode = (token) => {
@@ -55,9 +59,9 @@ export const authReducer = (state = authState, action) => {
         successMessage: payload.successMessage,
         error: "",
       };
-      
+
     case USER_REGISTER_FAIL:
-      case USER_LOGOUT_FAIL:
+    case USER_LOGOUT_FAIL:
       return {
         ...state,
         loading: false,
@@ -65,15 +69,34 @@ export const authReducer = (state = authState, action) => {
         error: payload.error,
         myInfo: "",
       };
-      case USER_LOGOUT_SUCCESS:
-        return {
+    case UPDATED_PROFILE_PIC:
+      const updatedPicInfo = tokenDecode(payload.token);
+      return {
+        ...state,
+        successMessage: true,
+        myInfo: updatedPicInfo,
+      };
+    case UPDATED_PROFILE_DETAILS:
+      const updatedUserInfo = tokenDecode(payload.token);
+      return {
+        ...state,
+        successMessage: true,
+        myInfo: updatedUserInfo,
+      };
+      case UPDATED_PROFILE_DETAILS_FAIL:
+        return{
           ...state,
-          loading: false,
-          myInfo: null,
-          error: null,
-          isAuthenticated: false,
-          successMessage: "Logout Successful",
-
+          successMessage: false,
+          error: payload.error
+        }
+    case USER_LOGOUT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        myInfo: {},
+        error: null,
+        isAuthenticated: false,
+        successMessage: payload.successMessage,
       };
 
     case SUCCESS_CLEAR:

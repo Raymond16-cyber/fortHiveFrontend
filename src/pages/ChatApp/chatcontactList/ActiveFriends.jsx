@@ -2,15 +2,32 @@ import React from "react";
 import "../../../css/ChatApp/ActiveFriends.css";
 import defaultUser from "../../../assets/defaultUser.png"; // Ensure this path is correct
 
-const ActiveFriends = ({ user, currentFriend, setCurrentFriend }) => {
+const ActiveFriends = ({
+  user,
+  currentFriend,
+  setCurrentFriend,
+  friendProfileDetails,
+}) => {
   const showMessages = () => {
-    setCurrentFriend({
-      email: user.userInfo.email,
-      fname: user.userInfo.fname,
-      lname: user.userInfo.lname,
-      _id: user.userInfo.id,
-    });
+    setCurrentFriend(user.userInfo);
   };
+
+  // Change to this if later not working
+  // const showMessages = () => {
+  //   if (
+  //     friendProfileDetails &&
+  //     friendProfileDetails._id === user.userInfo._id
+  //   ) {
+  //     setCurrentFriend({ ...user.userInfo, ...friendProfileDetails });
+  //   } else {
+  //     setCurrentFriend({ ...user.userInfo }); // always create a new object
+  //   }
+  // };
+
+  console.log("userInfo", user.userInfo);
+  console.log("firndProfiledetails", friendProfileDetails);
+
+  console.log("from aktiveUser", user);
 
   return (
     <div
@@ -19,7 +36,14 @@ const ActiveFriends = ({ user, currentFriend, setCurrentFriend }) => {
     >
       <div className="relative w-[60px] h-[60px] rounded-full bg-black border-double">
         <img
-          src={user.userInfo.image ? user.userInfo.image : defaultUser}
+          src={
+            friendProfileDetails?._id === user.userInfo._id &&
+            friendProfileDetails?.image
+              ? `/userProfilePic/${friendProfileDetails.image}`
+              : user.userInfo.image
+              ? `/userProfilePic/${user.userInfo.image}`
+              : defaultUser
+          }
           alt="friend"
           className="w-full h-full object-cover rounded-full ring-black"
         />
@@ -28,7 +52,14 @@ const ActiveFriends = ({ user, currentFriend, setCurrentFriend }) => {
         </div>
       </div>
 
-      <p className="text-xs mt-1 text-center">{user.userInfo.fname}</p>
+      <p className="text-xs mt-1 text-center">
+        <p className="text-xs mt-1 text-center">
+          {friendProfileDetails?._id === user.userInfo._id &&
+          friendProfileDetails.fname
+            ? friendProfileDetails.fname
+            : user.userInfo.fname}
+        </p>
+      </p>
     </div>
   );
 };

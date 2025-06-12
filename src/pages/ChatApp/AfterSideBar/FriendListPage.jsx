@@ -21,6 +21,13 @@ const FriendListPage = ({
   currentFriend,
   userIsActive,
   myInfo,
+  changeProfileDetails,
+  setChangeProfileDetails,
+  handleChangeProfileDetails,
+  hiddenChangeImageFileChange,
+  hiddenChangeImageFileClick,
+  hiddenChangeImageFileInput,
+  friendProfileDetails,
 }) => {
   const [hideOptions, setHideOptions] = useState(false);
   const [userFriends, setUserFriends] = useState(friends);
@@ -38,12 +45,16 @@ const FriendListPage = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
- const filteredFriends = userFriends.filter((friend) => {
-  const name = `${friend.friendInfo.fname} ${friend.friendInfo.lname}`.toLowerCase();
-  return name.includes(filterFriends.toLowerCase());
-});
+  const filteredFriends = userFriends.filter((friend) => {
+    console.log("from filter", friend);
+
+    const name =
+      `${friend.friendInfo.fname} ${friend.friendInfo.lname}`.toLowerCase();
+    return name.includes(filterFriends.toLowerCase());
+  });
 
   console.log("filtered friends", userFriends);
+  console.log("currentFriend", currentFriend);
 
   useEffect(() => {
     setUserFriends(friends);
@@ -58,109 +69,99 @@ const FriendListPage = ({
   //   }
   // };
 
-  return (
-    <div className="col border w-full sm:w-3/12 md:3/12 bg-white">
-      <div className="leftSide flex flex-col px-2 h-screen gap-1 bg-gray-200">
-        <div className="leftSideTop flex ">
-          <div className="flex items-center w-full justify-between my-2">
-            <div>
-              <h2 className="font-bold text-2xl text-black">Chats</h2>
-            </div>
-            <div className="relative flex gap-3 items-center">
-              <button
-                className="hover:bg-black p-2 rounded-md hover:text-white shadow-lg"
-                onClick={() => setHideOptions(!hideOptions)}
-              >
-                <FaEllipsisH className="text-black hover:text-white transition-all duration-300 ease-in-out transform " />
-              </button>
+  console.log("friendProfileDetails", friendProfileDetails);
 
-              <div className="menu shadow-lg shadow-gray-200">
-                {/* Only shows on Large screens */}
-                <FaPlusCircle
-                  className="hidden sm:flex "
-                  onClick={AddFriends}
-                />
-              </div>
-              <div
-                className={
-                  hideOptions
-                    ? "themeLogout absolute top-10 left-24 -translate-x-1/2 whitespace-nowrap bg-black text-white z-30 px-2 w-fit font-bold gap-6"
-                    : "themeLogoutshow flex flex-col"
-                }
-                ref={pickerRef}
-              >
-                <h3>Dark Mode </h3>
-                {/* <div className="on flex items-center justify-between">
-                  <label htmlFor="dark">ON</label>
-                  <input type="radio" id="dark" value="dark" name="theme" />
-                </div>
-                <div className="off flex items-center gap-20">
-                  <label htmlFor="white">OFF</label>
-                  <input type="radio" id="white" value="white" name="theme" />
-                </div> */}
-                <p className="text-sm">Coming Soon....</p>
-              </div>
-            </div>
+return (
+  <div className="flex flex-col h-screen w-full sm:w-3/12 md:3/12   bg-gradient-to-br from-blue-50 to-white">
+    {/* Header */}
+    <div className="sticky top-0 z-10 bg-white shadow flex items-center justify-between px-6 py-4 border-b l">
+      <h2 className="font-extrabold text-2xl text-blue-700 tracking-tight">Chats</h2>
+      <div className="flex items-center gap-3">
+        <button
+          className="hover:bg-blue-100 p-2 rounded-full transition"
+          onClick={() => setHideOptions(!hideOptions)}
+        >
+          <FaEllipsisH className="text-blue-700 text-lg" />
+        </button>
+        <button
+          className="hidden sm:flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg shadow hover:bg-blue-700 transition"
+          onClick={AddFriends}
+        >
+          <FaPlus className="text-base" />
+          <span className="text-sm font-semibold">Add Friend</span>
+        </button>
+        {/* Options Dropdown */}
+        {hideOptions && (
+          <div
+            className="absolute right-6 top-16 bg-white border rounded-lg shadow-lg z-30 p-4 min-w-[180px]"
+            ref={pickerRef}
+          >
+            <h3 className="font-semibold mb-2">Theme</h3>
+            <p className="text-sm text-gray-500">Dark Mode Coming Soon...</p>
           </div>
-        </div>
-
-        {/* searchfriend */}
-        <Filter setFilterFriends={setFilterFriends} />
-
-        {/* Users active friends */}
-        <div className="ActiveFriends mt-4 flex items-center gap-4 overflow-x-scroll px-4">
-          {/* Add Story Box */}
-          {/* <div className="flex flex-col items-center">
-            <div className="p-4 bg-slate-100 rounded-full">
-              <FaPlus />
-            </div>
-            <p className="text-sm font-medium mt-1">Add Story</p>
-          </div> */}
-
-          {/* Active Friends */}
-          {userIsActive && userIsActive.length > 0 ? (
-            userIsActive.map((user) => (
-              <ActiveFriends
-                key={user.userId}
-                user={user}
-                currentFriend={currentFriend}
-                setCurrentFriend={setCurrentFriend}
-                userIsActive={userIsActive}
-              />
-            ))
-          ) : (
-            <p className="text-sm text-gray-400 ml-2">No Active Friends</p>
-          )}
-        </div>
-
-        <div className="user-contact-scroll overflow-y-scroll">
-          {filteredFriends.length === 0 ? (
-            <div className="border-t-2 mt-6 border-b-2 p-6">
-              <p className="text-gray-400">
-                {filterFriends.length === 0
-                  ? "You don't have any friends at the moment"
-                  : "No friends found matching your search."}
-              </p>
-            </div>
-          ) : (
-            filteredFriends.map((friend, i) => (
-              <div
-                key={i}
-                onClick={() => setCurrentFriend(friend.friendInfo)}
-                className={
-                  currentFriend?._id === friend.friendInfo._id
-                    ? "current-friend-active"
-                    : "current-friend"
-                }
-              >
-                <Friends friend={friend} myInfo={myInfo} />
-              </div>
-            ))
-          )}
-        </div>
+        )}
       </div>
     </div>
-  );
+
+    {/* Search */}
+    <div className="px-6 py-3 bg-white border-b">
+      <Filter setFilterFriends={setFilterFriends} />
+    </div>
+
+    {/* Active Friends */}
+    <div className="flex items-center gap-4 px-6 py-4 bg-white border-b overflow-x-auto">
+      {userIsActive && userIsActive.length > 0 ? (
+        userIsActive.map((user) => (
+          <ActiveFriends
+            key={user.userId}
+            user={user}
+            currentFriend={currentFriend}
+            setCurrentFriend={setCurrentFriend}
+            userIsActive={userIsActive}
+            friendProfileDetails={friendProfileDetails}
+            userFriends={userFriends}
+          />
+        ))
+      ) : (
+        <p className="text-sm text-gray-400 ml-2">No Active Friends</p>
+      )}
+    </div>
+
+    {/* Friends List */}
+    <div className="flex-1 overflow-y-auto px-0 py-4 bg-gradient-to-br from-white to-blue-50">
+      {filteredFriends.length === 0 ? (
+        <div className="mx-8 mt-10 bg-white rounded-xl shadow p-8 text-center text-gray-400">
+          {filterFriends.length === 0
+            ? "You don't have any friends at the moment"
+            : "No friends found matching your search."}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 px-4">
+          {filteredFriends.map((friend, i) => (
+            <div
+              key={i}
+              onClick={() => setCurrentFriend(friend.friendInfo)}
+              className={`transition-all duration-150 rounded-xl cursor-pointer shadow-sm border
+                ${
+                  currentFriend?._id === friend.friendInfo._id
+                    ? "bg-blue-100 border-blue-500 ring-2 ring-blue-200"
+                    : "bg-white hover:bg-blue-50 border-transparent"
+                }
+                `}
+              style={{ minHeight: "72px" }}
+            >
+              <Friends
+                friend={friend}
+                myInfo={myInfo}
+                friendProfileDetails={friendProfileDetails}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+);
 };
 
 export default FriendListPage;

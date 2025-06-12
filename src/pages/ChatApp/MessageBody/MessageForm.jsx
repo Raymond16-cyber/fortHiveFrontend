@@ -72,7 +72,7 @@ const MessageForm = ({
   //Setting attchmenmt show
 
   return (
-    <div className="message-send-section sticky p-4 bg-black text-white flex items-center gap-3">
+    <div className="message-send-section sticky p-4 bg-blue-600 text-white flex items-center gap-3">
       {/* supposed to be near below the 'select an image,but position does not matter' */}
       <div className="">
         <input

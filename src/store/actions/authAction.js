@@ -1,4 +1,5 @@
 import axiosInstance from "../axiosInstance/axiosInstance";
+import axios from "axios";
 import {
   USER_REGISTER_FAIL,
   USER_REGISTER_SUCCESS,
@@ -50,11 +51,11 @@ export const userLogin = (data) => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true
-      },);
+        withCredentials: true,
+      });
 
-      console.log("from login action",response.data);
-      
+      console.log("from login action", response.data);
+
       localStorage.setItem("userToken", response.data.token);
 
       console.log("✅Login Success:", response.data);
@@ -81,16 +82,19 @@ export const userLogin = (data) => {
 };
 
 // user logout
-export const userLogout = () => async (dispatch) => {
+export const userLogout = (isLoggedOut) => async (dispatch) => {
   try {
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("myInfo");
     const response = await axiosInstance.post("/api/v1/fort/user-logout");
+    console.log("user logged out successfully");
 
-    if (response) {
-      localStorage.removeItem("userToken");
-      dispatch({
-        type: USER_LOGOUT_SUCCESS,
-      });
-    }
+    dispatch({
+      type: USER_LOGOUT_SUCCESS,
+      payload: {
+        successMessage: response.data.successMessage,
+      },
+    });
   } catch (error) {
     console.log(error);
   }

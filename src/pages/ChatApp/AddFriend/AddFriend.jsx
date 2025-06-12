@@ -5,14 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { addFriend } from "../../../store/actions/friendAction";
 import { toast } from "react-toastify";
+import { ADD_FRIEND_FAIL_CLEAR } from "../../../store/types/aythType";
 
 const AddFriend = ({ goBack }) => {
   const [inputFriend, setInputFriend] = useState(false);
   const [attempted, setAttempted] = useState(false);
 
-  const { friends, error } = useSelector((state) => state.friends);
-  console.log("from isA",friends);
-  
+  const { friends, error, friendAdded } = useSelector((state) => state.friends);
+  console.log("from isA", friends);
+  console.log("from isError", error);
 
   const showInputField = () => {
     setInputFriend(true);
@@ -20,34 +21,36 @@ const AddFriend = ({ goBack }) => {
   const [fname, setFname] = useState("");
   const dispatch = useDispatch();
 
-const handleAddFriend = async (e) => {
-  e.preventDefault();
-  if (!fname) {
-    toast.warning("Please enter a username");
-    return;
-  }
+  const handleAddFriend = async (e) => {
+    e.preventDefault();
+    if (!fname) {
+      toast.warning("Please enter a username");
+      return;
+    }
 
-  setAttempted(true); // mark that we're trying to add
+    setAttempted(true); // mark that we're trying to add
 
-  await dispatch(addFriend(fname));
-  setFname("");
-  setInputFriend(false);
-  goBack();
-};
+    await dispatch(addFriend(fname));
+    setFname("");
+    setInputFriend(false);
+    goBack();
+  };
 
-
-useEffect(() => {
+  useEffect(() => {
   if (!attempted) return;
 
   if (error) {
     toast.error(error);
-  } else {
-    toast.success("Friend added!", { toastId: "friend-added" });
+    dispatch({ type: ADD_FRIEND_FAIL_CLEAR });
   }
 
-  setAttempted(false); // reset
-}, [error, attempted]);
+  if (friendAdded) {
+    toast.success("Friend added!", { toastId: "friend-added" });
+    dispatch({ type: "FRIEND_ADD_CLEAR" }); // reset flag
+  }
 
+  setAttempted(false);
+}, [error, friendAdded]); // ✅ depend on both
 
   return (
     <div className="col border w-full sm:w-3/12 md:3/12 flex flex-col items-center h-screen">
